@@ -15,14 +15,10 @@ func writeJSONReport(pages map[string]PageData, filename string) error {
 	}
 	sort.Strings(keys)
 
-	fmt.Println(keys)
-
 	sortedPages := make([]PageData, 0, len(pages))
 	for _, k := range keys {
 		sortedPages = append(sortedPages, pages[k])
 	}
-
-	fmt.Println(sortedPages)
 
 	jsonData, err := json.MarshalIndent(sortedPages, "", " ")
 	if err != nil {

@@ -17,4 +17,8 @@ func main() {
 	}
 
 	fmt.Printf("starting crawl of: %v\n", os.Args[1])
+	pages := make(map[string]int)
+	crawlPage(os.Args[1], os.Args[1], pages)
+
+	fmt.Printf("pages: %v\n", pages)
 }

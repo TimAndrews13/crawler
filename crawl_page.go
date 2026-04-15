@@ -12,7 +12,7 @@ func (cfg *config) crawlPage(rawCurrentURL string) {
 	}()
 	defer cfg.wg.Done()
 	//check maxPages
-	if len(cfg.pages) > cfg.maxPages {
+	if len(cfg.pages) >= cfg.maxPages {
 		return
 	}
 
@@ -45,20 +45,17 @@ func (cfg *config) crawlPage(rawCurrentURL string) {
 		fmt.Println("error parsing html from current url")
 		return
 	}
+
+	pageData := extractPageData(html, rawCurrentURL)
+	cfg.setPageData(normalizedURL, pageData)
+
 	fmt.Printf("crawling %s\n", rawCurrentURL)
 
-	//get urls from html
-	urls, err := getURLsFromHTML(html, cfg.baseURL)
-	if err != nil {
-		fmt.Println("error parsing urls from current html")
-		return
-	}
-
-	for _, url := range urls {
+	for _, nextURL := range pageData.OutgoingLinks {
 		cfg.wg.Add(1)
 		go func(url string) {
 			cfg.crawlPage(url)
-		}(url)
+		}(nextURL)
 	}
 }
 

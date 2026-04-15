@@ -13,3 +13,9 @@ type config struct {
 	wg                 *sync.WaitGroup
 	maxPages           int
 }
+
+func (cfg *config) setPageData(normalizedURL string, data PageData) {
+	cfg.mu.Lock()
+	defer cfg.mu.Unlock()
+	cfg.pages[normalizedURL] = data
+}

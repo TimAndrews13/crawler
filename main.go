@@ -14,8 +14,8 @@ func main() {
 		fmt.Println("no website provided")
 		os.Exit(1)
 	}
-	if len(args) > 4 {
-		fmt.Println("too many arguments provided")
+	if len(args) != 4 {
+		fmt.Println("3 arguments required: website, MaxConcurrency, MaxPages")
 		os.Exit(1)
 	}
 
@@ -27,14 +27,14 @@ func main() {
 		return
 	}
 
-	maxConcurency, _ := strconv.Atoi(os.Args[2])
+	maxConcurrency, _ := strconv.Atoi(os.Args[2])
 	maxPages, _ := strconv.Atoi(os.Args[3])
 
 	cfg := &config{
 		pages:              make(map[string]PageData),
 		baseURL:            parsedURL,
 		mu:                 &sync.Mutex{},
-		concurrencyControl: make(chan struct{}, maxConcurency),
+		concurrencyControl: make(chan struct{}, maxConcurrency),
 		wg:                 &sync.WaitGroup{},
 		maxPages:           maxPages,
 	}
@@ -48,4 +48,6 @@ func main() {
 	for normalizedURL := range cfg.pages {
 		fmt.Printf("found: %s\n", normalizedURL)
 	}
+
+	writeJSONReport(cfg.pages, "report.json")
 }
